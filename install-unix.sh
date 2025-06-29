@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Git Aliases Installation Script for macOS/Linux
-# This script will add git aliases to your shell configuration file
+# Git Aliases Installation Script for macOS/Linux/Unix
+# This script will add git aliases to your shell configuration file on any Unix-based OS (macOS, Linux, WSL, etc.)
 
 set -e
 
@@ -111,6 +111,14 @@ main() {
     if ! command -v git &> /dev/null; then
         print_error "Git is not installed. Please install Git first."
         exit 1
+    fi
+    
+    # Add confirmation prompt before installation actions
+    echo -n "Do you want to continue with the installation? (y/n): "
+    read -r confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        echo "Installation cancelled by user."
+        exit 0
     fi
     
     # Detect shell configuration file

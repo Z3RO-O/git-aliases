@@ -1,4 +1,4 @@
-# Git Alias
+# :octocat: Git Alias
 
 A collection of powerful git aliases designed to boost your productivity and streamline your git workflow. These aliases transform lengthy git commands into short, memorable shortcuts, helping developers work more efficiently with version control.
 
@@ -16,6 +16,7 @@ Git aliases are custom shortcuts that save time and reduce typing when working w
 This collection includes carefully selected aliases for the most common git operations:
 
 ### Basic Operations
+
 - `g` - git
 - `gst` - git status
 - `ga` - git add
@@ -24,6 +25,7 @@ This collection includes carefully selected aliases for the most common git oper
 - `gcb` - git checkout -b
 
 ### Remote Operations
+
 - `gp` - git push
 - `gl` - git pull
 - `gpr` - git pull --rebase
@@ -33,45 +35,57 @@ This collection includes carefully selected aliases for the most common git oper
 - `gr` - git remote
 
 ### Branch Management
+
 - `gbd` - git branch -D
 - `gm` - git merge
 - `grb` - git rebase
 - `gcp` - git cherry-pick
 
 ### History & Information
+
 - `glog` - git log .
 - `gcl` - git config --list
 
 ### Advanced Operations
+
 - `grs` - git reset --soft
 - `grh` - git reset --hard
 - `gstash` - git stash push -m
 
 ### Productivity Boosters
+
 - `gpo` - git push origin -u (current branch)
 - `pr` - Push current branch and create PR with GitHub CLI
 
 ## Installation
 
-### macOS/Linux
+### macOS/Linux/Unix
+
 Run the installation script:
+
 ```bash
-./install-macos.sh
+./install-unix.sh
 ```
 
+This script works for any Unix-based OS, including macOS, Linux, and WSL.
+
 ### Windows
+
 Run the cross-environment installation script:
+
 ```bash
 ./install-windows.sh
 ```
 
 **Features:**
+
 - 🔍 **Auto-detects** available environments (Git Bash, WSL, PowerShell)
 - 🎯 **Smart installation** to your preferred terminal(s)
 - 🔄 **Cross-environment support** - use the same aliases in both Git Bash and PowerShell
 - 📁 **Automatic profile management** - creates PowerShell profiles if needed
 
 **Installation Options:**
+
 1. **Git Bash/WSL only** - Traditional shell aliases
 2. **PowerShell only** - PowerShell functions
 3. **Both environments** (recommended) - Works everywhere!
@@ -81,7 +95,7 @@ Run the cross-environment installation script:
 - Git (obviously!)
 - For the `pr` alias: [GitHub CLI](https://cli.github.com/) installed and configured
 - macOS/Linux: Zsh or Bash shell
-- Windows: Git Bash, WSL, or PowerShell (with manual installation)
+- Windows: Git Bash or WSL
 
 ## Contributing
 

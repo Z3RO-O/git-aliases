@@ -67,73 +67,6 @@ alias gpo="git push origin -u \$(git branch --show-current)"
 alias pr="gpo && gh pr create --base \$(git symbolic-ref refs/remotes/origin/HEAD | sed \"s@^refs/remotes/origin/@@\") --head \$(git branch --show-current) --fill --web"
 '
 
-# Git aliases for PowerShell
-POWERSHELL_FUNCTIONS='
-# Git Aliases - Installed by git-alias installer
-function g { git $args }
-function gst { git status $args }
-function gp { git push $args }
-function gl { git pull $args }
-function gpr { git pull --rebase $args }
-function grb { git rebase $args }
-function gf { git fetch $args }
-function gfa { git fetch --all $args }
-function gcm { git commit -m $args }
-function gc { git checkout $args }
-function gclone { git clone $args }
-function gr { git remote $args }
-function gcb { git checkout -b $args }
-function gbd { git branch -D $args }
-function gcp { git cherry-pick $args }
-function gcl { git config --list $args }
-function glog { git log . $args }
-function ga { git add $args }
-function gm { git merge $args }
-function grs { git reset --soft $args }
-function grh { git reset --hard $args }
-function gstash { git stash push -m $args }
-function gpo { 
-    $currentBranch = git branch --show-current
-    git push origin -u $currentBranch
-}
-function pr { 
-    gpo
-    $currentBranch = git branch --show-current
-    $defaultBranch = git symbolic-ref refs/remotes/origin/HEAD | ForEach-Object { $_ -replace "^refs/remotes/origin/", "" }
-    gh pr create --base $defaultBranch --head $currentBranch --fill --web
-}
-'
-
-# Check if PowerShell is available
-check_powershell_available() {
-    # Try different ways to detect PowerShell availability
-    if command -v powershell &> /dev/null || command -v pwsh &> /dev/null; then
-        return 0
-    fi
-    
-    # Check Windows-specific locations
-    if [[ -f "/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ]] || 
-       [[ -f "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ]]; then
-        return 0
-    fi
-    
-    # Check if we can access PowerShell profile path (indicates PowerShell is available)
-    if [[ -n "$USERPROFILE" ]]; then
-        local ps_profile_dir
-        if [[ "$OSTYPE" == "msys" ]]; then
-            ps_profile_dir="$USERPROFILE/Documents/WindowsPowerShell"
-        else
-            ps_profile_dir="$(wslpath "$USERPROFILE" 2>/dev/null)/Documents/WindowsPowerShell" 2>/dev/null || true
-        fi
-        
-        if [[ -n "$ps_profile_dir" ]] && [[ -d "$(dirname "$ps_profile_dir")" ]]; then
-            return 0
-        fi
-    fi
-    
-    return 1
-}
-
 # Check if we're in a bash-compatible environment
 check_bash_available() {
     # We're already running in bash, so bash is available
@@ -142,24 +75,6 @@ check_bash_available() {
     fi
     
     return 1
-}
-
-# Get PowerShell profile path
-get_powershell_profile_path() {
-    local profile_path=""
-    
-    if [[ -n "$USERPROFILE" ]]; then
-        if [[ "$OSTYPE" == "msys" ]]; then
-            # Git Bash on Windows
-            profile_path="$USERPROFILE/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
-        else
-            # WSL
-            local userprofile_unix=$(wslpath "$USERPROFILE" 2>/dev/null) || return 1
-            profile_path="$userprofile_unix/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
-        fi
-    fi
-    
-    echo "$profile_path"
 }
 
 # Get bash config file path
@@ -180,16 +95,6 @@ get_bash_config_file() {
 check_bash_aliases_installed() {
     local config_file="$1"
     if [[ -f "$config_file" ]] && grep -q "# Git Aliases - Installed by git-alias installer" "$config_file"; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Check if aliases are already installed in PowerShell
-check_powershell_aliases_installed() {
-    local profile_path="$1"
-    if [[ -f "$profile_path" ]] && grep -q "# Git Aliases - Installed by git-alias installer" "$profile_path"; then
         return 0
     else
         return 1
@@ -224,51 +129,11 @@ install_to_bash() {
     echo "    Restart terminal or run: source $config_file"
 }
 
-# Install to PowerShell environment
-install_to_powershell() {
-    local profile_path=$(get_powershell_profile_path)
-    
-    if [[ -z "$profile_path" ]]; then
-        print_error "Could not determine PowerShell profile path"
-        return 1
-    fi
-    
-    print_status "Installing git aliases to PowerShell environment..."
-    print_status "Target file: $profile_path"
-    
-    # Create PowerShell profile directory if it doesn't exist
-    local profile_dir=$(dirname "$profile_path")
-    if [[ ! -d "$profile_dir" ]]; then
-        print_warning "Creating PowerShell profile directory: $profile_dir"
-        mkdir -p "$profile_dir"
-    fi
-    
-    # Create profile file if it doesn't exist
-    if [[ ! -f "$profile_path" ]]; then
-        print_warning "Creating new PowerShell profile: $profile_path"
-        touch "$profile_path"
-    fi
-    
-    # Check if already installed
-    if check_powershell_aliases_installed "$profile_path"; then
-        print_warning "Aliases already installed in PowerShell. Removing old version..."
-        # Create backup and remove existing
-        cp "$profile_path" "$profile_path.bak"
-        sed -i '/# Git Aliases - Installed by git-alias installer/,/^$/d' "$profile_path"
-    fi
-    
-    # Add functions
-    echo "$POWERSHELL_FUNCTIONS" >> "$profile_path"
-    print_success "✓ Git aliases installed to PowerShell environment"
-    echo "    File: $profile_path"
-    echo "    Restart PowerShell or run: . \$PROFILE"
-}
-
 # Show environment detection results
 show_environment_detection() {
     echo ""
     echo -e "${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║                    ENVIRONMENT DETECTION                      ║${NC}"
+    echo -e "${CYAN}║                    ENVIRONMENT DETECTION                       ║${NC}"
     echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     print_status "Detected environments:"
@@ -279,70 +144,7 @@ show_environment_detection() {
         print_not_detected "Git Bash / WSL / Bash environment not available"
     fi
     
-    if check_powershell_available; then
-        print_detected "PowerShell environment available"
-    else
-        print_not_detected "PowerShell environment not available"
-    fi
     echo ""
-}
-
-# Show installation menu
-show_installation_menu() {
-    local bash_available=false
-    local powershell_available=false
-    
-    if check_bash_available; then
-        bash_available=true
-    fi
-    
-    if check_powershell_available; then
-        powershell_available=true
-    fi
-    
-    if [[ "$bash_available" == false && "$powershell_available" == false ]]; then
-        print_error "No compatible environments detected!"
-        print_status "Please make sure you have Git Bash or PowerShell installed."
-        exit 1
-    fi
-    
-    echo -e "${GREEN}Which environments would you like to install git aliases to?${NC}"
-    echo ""
-    
-    local menu_options=()
-    local option_num=1
-    
-    if [[ "$bash_available" == true ]]; then
-        echo "  $option_num) Git Bash / WSL / Bash only"
-        menu_options[$option_num]="bash"
-        ((option_num++))
-    fi
-    
-    if [[ "$powershell_available" == true ]]; then
-        echo "  $option_num) PowerShell only"
-        menu_options[$option_num]="powershell"  
-        ((option_num++))
-    fi
-    
-    if [[ "$bash_available" == true && "$powershell_available" == true ]]; then
-        echo "  $option_num) Both environments (recommended)"
-        menu_options[$option_num]="both"
-        ((option_num++))
-    fi
-    
-    echo "  $option_num) Cancel installation"
-    menu_options[$option_num]="cancel"
-    
-    echo ""
-    echo -n "Enter your choice (1-$option_num): "
-    read -r choice
-    
-    if [[ -z "${menu_options[$choice]}" ]]; then
-        print_error "Invalid choice. Please try again."
-        return 1
-    fi
-    
-    echo "${menu_options[$choice]}"
 }
 
 # Main installation function
@@ -361,47 +163,21 @@ main() {
     
     # Show environment detection
     show_environment_detection
+
+    # Confirmation prompt
+    echo -n "Do you want to continue with the installation? (y/n): "
+    read -r confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        print_status "Installation cancelled by user."
+        exit 0
+    fi
     
-    # Show installation menu and get choice
-    local install_choice
-    while true; do
-        install_choice=$(show_installation_menu)
-        if [[ $? -eq 0 ]]; then
-            break
-        fi
-        echo ""
-    done
-    
-    echo ""
-    print_status "Selected: $install_choice"
-    echo ""
-    
-    # Handle the choice
-    case "$install_choice" in
-        "bash")
-            install_to_bash
-            ;;
-        "powershell")
-            install_to_powershell
-            ;;
-        "both")
-            install_to_bash
-            echo ""
-            install_to_powershell
-            ;;
-        "cancel")
-            print_status "Installation cancelled."
-            exit 0
-            ;;
-        *)
-            print_error "Unknown choice: $install_choice"
-            exit 1
-            ;;
-    esac
+    # Install to bash environment
+    install_to_bash
     
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                    INSTALLATION COMPLETE                      ║${NC}"
+    echo -e "${GREEN}║                    INSTALLATION COMPLETE                       ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════════════════════════════╝${NC}"
     
     # Check if GitHub CLI is available for the 'pr' alias
