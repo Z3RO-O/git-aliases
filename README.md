@@ -1,10 +1,10 @@
-# :octocat: Git Alias
+# Git Alias
 
-A collection of powerful git aliases designed to boost your productivity and streamline your git workflow. These aliases transform lengthy git commands into short, memorable shortcuts, helping developers work more efficiently with version control.
+A collection of powerful git aliases designed to boost your productivity and streamline your git workflow :octocat:. These aliases transform lengthy git commands into short, memorable shortcuts, helping developers work more efficiently with version control.
 
 ## Why Use Git Aliases?
 
-Git aliases are custom shortcuts that save time and reduce typing when working with git commands. Instead of typing `git status`, you can simply type `gst`. These aliases are particularly valuable for:
+Git aliases :octocat: are custom shortcuts that save time and reduce typing when working with git commands. Instead of typing `git status`, you can simply type `gst`. These aliases are particularly valuable for:
 
 - **Increased Productivity**: Reduce keystrokes by up to 70% on common git operations
 - **Muscle Memory**: Short, consistent aliases become second nature quickly
