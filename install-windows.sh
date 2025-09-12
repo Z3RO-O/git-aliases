@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Git Aliases Cross-Environment Installation Script for Windows
-# This script can install git aliases to both Git Bash and PowerShell
+# Git Aliases Installation Script for Windows (Git Bash)
+# This script installs git aliases for bash environments (Git Bash, WSL, etc.)
 
 set -e
 
@@ -136,7 +136,7 @@ show_environment_detection() {
     echo -e "${CYAN}║                    ENVIRONMENT DETECTION                       ║${NC}"
     echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    print_status "Detected environments:"
+    print_status "Detected environment:"
     
     if check_bash_available; then
         print_detected "Git Bash / WSL / Bash environment available"
@@ -151,7 +151,7 @@ show_environment_detection() {
 main() {
     clear
     echo -e "${BLUE}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║              GIT ALIASES CROSS-ENVIRONMENT INSTALLER           ║${NC}"
+    echo -e "${BLUE}║                 GIT ALIASES BASH INSTALLER                     ║${NC}"
     echo -e "${BLUE}╚════════════════════════════════════════════════════════════════╝${NC}"
     
     # Check if git is installed
@@ -185,12 +185,17 @@ main() {
         echo ""
         print_warning "GitHub CLI (gh) is not installed. The 'pr' alias won't work until you install it."
         print_status "Install GitHub CLI: https://cli.github.com/"
-        print_status "For Windows: winget install --id GitHub.cli"
+        print_status "For Windows: winget install --id GitHub.cli (in PowerShell)"
+        print_status "Or download from: https://github.com/cli/cli/releases"
     fi
     
     echo ""
     print_success "Git aliases have been successfully installed! 🚀"
     print_status "You can now use short git commands like 'gst' for 'git status'"
+    print_status "To use these aliases in VS Code, set Git Bash as your default terminal:"
+    print_status "  1. Press Ctrl+Shift+P in VS Code"
+    print_status "  2. Search for 'Terminal: Select Default Profile'"
+    print_status "  3. Select 'Git Bash'"
     echo ""
 }
 

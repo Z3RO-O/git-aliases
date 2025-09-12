@@ -71,31 +71,87 @@ This script works for any Unix-based OS, including macOS, Linux, and WSL.
 
 ### Windows
 
-Run the cross-environment installation script:
+Run the installation script in Git Bash:
 
 ```bash
 ./install-windows.sh
 ```
 
-**Features:**
+**Note**: This script is designed for bash environments (Git Bash, WSL). After installation, you can set Git Bash as your default terminal in VS Code for the best experience.
 
-- 🔍 **Auto-detects** available environments (Git Bash, WSL, PowerShell)
-- 🎯 **Smart installation** to your preferred terminal(s)
-- 🔄 **Cross-environment support** - use the same aliases in both Git Bash and PowerShell
-- 📁 **Automatic profile management** - creates PowerShell profiles if needed
+## Setting Git Bash as Default Terminal in VS Code
 
-**Installation Options:**
+For Windows users, we recommend using Git Bash as your default terminal in VS Code to fully utilize these git aliases:
 
-1. **Git Bash/WSL only** - Traditional shell aliases
-2. **PowerShell only** - PowerShell functions
-3. **Both environments** (recommended) - Works everywhere!
+### Method 1: Via Command Palette (Recommended)
+
+1. Open VS Code
+2. Press `Ctrl+Shift+P` to open the Command Palette
+3. Type "Terminal: Select Default Profile" and select it
+4. Choose "Git Bash" from the list
+5. Open a new terminal with `Ctrl+`` (backtick) - it will now use Git Bash
+
+### Method 2: Via Settings
+
+1. Open VS Code Settings (`Ctrl+,`)
+2. Search for "terminal integrated shell"
+3. Click "Edit in settings.json"
+4. Add or update this setting:
+
+   ```json
+   {
+     "terminal.integrated.defaultProfile.windows": "Git Bash"
+   }
+   ```
+
+### Method 3: Manual Profile Configuration
+
+If Git Bash doesn't appear in the list, you can manually configure it:
+
+1. Open VS Code Settings (`Ctrl+,`)
+2. Search for "terminal integrated profiles"
+3. Click "Edit in settings.json"
+4. Add this configuration:
+
+   ```json
+   {
+     "terminal.integrated.profiles.windows": {
+       "Git Bash": {
+         "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+         "args": ["--login"]
+       }
+     },
+     "terminal.integrated.defaultProfile.windows": "Git Bash"
+   }
+   ```
+
+**Note**: Adjust the path if Git is installed in a different location.
+
+## Troubleshooting
+
+### Git Bash not found in VS Code
+
+If Git Bash doesn't appear as an option:
+
+1. Make sure Git for Windows is properly installed
+2. Restart VS Code after installing Git
+3. Check that Git Bash is located at: `C:\Program Files\Git\bin\bash.exe`
+4. Use Method 3 above to manually configure the path
+
+### Aliases not working
+
+If the aliases don't work after installation:
+
+1. Close and reopen your terminal
+2. Or run: `source ~/.bashrc` (or `source ~/.bash_profile` depending on your config)
+3. Make sure you're using Git Bash, not PowerShell or Command Prompt
 
 ## Requirements
 
 - Git (obviously!)
 - For the `pr` alias: [GitHub CLI](https://cli.github.com/) installed and configured
 - macOS/Linux: Zsh or Bash shell
-- Windows: Git Bash or WSL
+- Windows: Git Bash, WSL, or any bash-compatible environment
 
 ## Contributing
 
