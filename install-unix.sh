@@ -61,12 +61,15 @@ pr() {
         draft_flag="--draft"
     fi
     
-    # Create PR and capture the URL
-    local pr_url=$(gpo && gh pr create \
+    # Create PR and capture output
+    local output=$(gpo && gh pr create \
         --base $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@") \
         --head $(git branch --show-current) \
         --fill \
-        $draft_flag 2>&1 | grep -o 'https://github.com[^[:space:]]*')
+        $draft_flag 2>&1)
+    
+    # Extract only the URL
+    local pr_url=$(echo "$output" | grep -o 'https://github.com[^[:space:]]*' | head -1)
     
     if [[ -n "$pr_url" ]]; then
         # Copy to clipboard (cross-platform)
@@ -99,6 +102,7 @@ pr() {
         echo "✓ PR created and URL copied to clipboard: $pr_url"
     else
         echo "✗ Failed to create PR"
+        echo "$output"
         return 1
     fi
 }
