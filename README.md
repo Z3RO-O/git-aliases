@@ -55,7 +55,8 @@ This collection includes carefully selected aliases for the most common git oper
 ### Productivity Boosters
 
 - `gpo` - git push origin -u (current branch)
-- `pr` - Push current branch and create PR with GitHub CLI
+- `pr` - Push current branch and create PR with GitHub CLI (automatically opens in browser and copies URL to clipboard)
+- `pr -d` - Create a draft PR with Github CLI (automatically opens in browser and copies URL to clipboard)
 
 ## Installation
 

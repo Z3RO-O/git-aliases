@@ -64,7 +64,53 @@ alias grs="git reset --soft"
 alias grh="git reset --hard"
 alias gstash="git stash push -m"
 alias gpo="git push origin -u \$(git branch --show-current)"
-alias pr="gpo && gh pr create --base \$(git symbolic-ref refs/remotes/origin/HEAD | sed \"s@^refs/remotes/origin/@@\") --head \$(git branch --show-current) --fill --web"
+pr() {
+    local draft_flag=""
+    if [[ "$1" == "-d" ]]; then
+        draft_flag="--draft"
+    fi
+    
+    # Create PR and capture the URL
+    local pr_url=$(gpo && gh pr create \
+        --base $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@") \
+        --head $(git branch --show-current) \
+        --fill \
+        $draft_flag 2>&1 | grep -o 'https://github.com[^[:space:]]*')
+    
+    if [[ -n "$pr_url" ]]; then
+        # Copy to clipboard (cross-platform)
+        if command -v pbcopy &> /dev/null; then
+            # macOS
+            echo "$pr_url" | pbcopy
+        elif command -v xclip &> /dev/null; then
+            # Linux with xclip
+            echo "$pr_url" | xclip -selection clipboard
+        elif command -v xsel &> /dev/null; then
+            # Linux with xsel
+            echo "$pr_url" | xsel --clipboard --input
+        elif command -v clip.exe &> /dev/null; then
+            # WSL
+            echo "$pr_url" | clip.exe
+        fi
+        
+        # Open in browser
+        if command -v open &> /dev/null; then
+            # macOS
+            open "$pr_url"
+        elif command -v xdg-open &> /dev/null; then
+            # Linux
+            xdg-open "$pr_url"
+        elif command -v start &> /dev/null; then
+            # Windows/WSL
+            start "$pr_url"
+        fi
+        
+        echo "✓ PR created and URL copied to clipboard: $pr_url"
+    else
+        echo "✗ Failed to create PR"
+        return 1
+    fi
+}
 '
 
 # Check if we're in a bash-compatible environment
